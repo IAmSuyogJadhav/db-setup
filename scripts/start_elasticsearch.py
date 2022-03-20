@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # Launch the master node
     subprocess.Popen(shlex.split(
         f"ssh -f {MASTER_IP} ES_PATH_CONF={os.path.join(DB_SETUP_PATH, 'elastic_config_master1')} "
-        f"{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/bin/elasticsearch')} -Ehttp.port={port}-d -p pid"
+        f"{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/bin/elasticsearch')} -Ehttp.port={port} -d -p pid"
         )
     )
     pid_files.append(os.path.join(os.path.abspath(os.path.curdir), 'pid'))
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         # Launch the node
         subprocess.Popen(shlex.split(
             f"ssh -f {ip} ES_PATH_CONF={os.path.join(DB_SETUP_PATH, 'elastic_config_data1')} "
-            f"{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/bin/elasticsearch')} -Ehttp.port={port}-d -p pid{i} "
+            f"{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/bin/elasticsearch')} -Ehttp.port={port} -d -p pid{i} "
             f"-Enode.name=data-{i} -Epath.data='{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/data_data' + str(i))}'"
             )
         )
