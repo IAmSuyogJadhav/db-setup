@@ -38,15 +38,15 @@ def arg_parser():
 
 
 class GracefulKiller():
-    def __init__(self, pids):
-        self.pids = pids
+    def __init__(self, kill_cmds):
+        self.kill_cmds = kill_cmds
         self.exit_now = False
         signal.signal(signal.SIGINT, self.exit_gracefully)
         signal.signal(signal.SIGTERM, self.exit_gracefully)
 
     def exit_gracefully(self, *args):
-        for pid in self.pids:
-            os.kill(pid, signal.SIGKILL)
+        for cmd in self.kill_cmds:
+            subprocess.Popen(shlex.split(cmd))
         self.exit_now = True
 
 
@@ -74,8 +74,8 @@ if __name__ == '__main__':
     port = args.port
     assert num_nodes >= 1, "Must be more than 1"
 
-    # Keep track of process ids
-    pid_files = []
+    # Keep track of processes launched
+    kill_cmds = []
 
     # Fetch a list of available compute nodes
     hosts = generate_hosts(num_nodes, port)
@@ -88,7 +88,7 @@ if __name__ == '__main__':
         f"{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/bin/elasticsearch')} -Ehttp.port={port} -d -p pid"
         )
     )
-    pid_files.append(os.path.join(os.path.abspath(os.path.curdir), 'pid'))
+    kill_cmds.append(f"ssh -f {MASTER_IP} kill $(cat pid)")
     print(f'[INFO] Launched the master node master-1 at {MASTER_IP}:{port}')
 
     # Launch the rest of the nodes (data nodes)
@@ -102,14 +102,11 @@ if __name__ == '__main__':
             f"-Enode.name=data-{i} -Epath.data='{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/data_data' + str(i))}'"
             )
         )
-        pid_files.append(os.path.join(os.path.abspath(os.path.curdir), f'pid{i}'))
+        kill_cmds.append(f"ssh -f {ip} kill $(cat pid{i})")
         print(f'[INFO] Launched data node data-{i} at {ip}:{port}')
-    
-    # Parse and store all the pids
-    pids = [int(pat.findall(f)[0]) for f in pid_files]
 
     # Keep this script running so that all the processes launched above can be stopped at once
-    killer = GracefulKiller(pids)
+    killer = GracefulKiller(kill_cmds)
     while not killer.exit_now:
         time.sleep(1)
     print("[INFO] Killed gracefully.")
