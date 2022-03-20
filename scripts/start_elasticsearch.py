@@ -100,7 +100,7 @@ if __name__ == '__main__':
             f"ssh -f {ip} ES_PATH_CONF={os.path.join(DB_SETUP_PATH, 'elastic_config_data1')} "
             f"{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/bin/elasticsearch')} -Ehttp.port={port} -d -p pid{i} "
             f"-Enode.name=data-{i} -Epath.data='{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/data_data' + str(i))}' "
-            # f"-Ediscovery.seed_hosts=['{MASTER_IP}']"
+            f"-Ediscovery.seed_hosts=[{MASTER_IP}]"
             )
         )
         kill_cmds.append(f"ssh -f {ip} kill $(cat {os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/pid' + str(i))})")
