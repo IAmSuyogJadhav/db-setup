@@ -8,14 +8,11 @@ import re
 import time
 
 # Some parameters
-NODE_SCRIPT = os.path.join(os.path.abspath(os.path.curdir), 'start_elasticsearch.py')  # Path to the node script
 PORT_DEFAULT = 55781
-# DIE_AFTER_SECONDS_DEFAULT = 20 * 60
 NODES_DEFAULT = 3
-K_DEFAULT = 10
 MASTER_IP = 'compute-3-12'
 DB_SETUP_PATH = '/home/sja082/db-assignment/db-setup/'
-
+# DIE_AFTER_SECONDS_DEFAULT = 20 * 60
 
 pat = re.compile('(\d+)')
 
@@ -82,7 +79,8 @@ if __name__ == '__main__':
 
     # Fetch a list of available compute nodes
     hosts = generate_hosts(num_nodes, port)
-    hosts.remove(f'{MASTER_IP}:{port}')  # Make sure the master IP isn't one of them
+    if f'{MASTER_IP}:{port}' in hosts:  # Make sure the master IP isn't one of them
+        hosts.remove(f'{MASTER_IP}:{port}')
 
     # Launch the master node
     subprocess.Popen(shlex.split(
