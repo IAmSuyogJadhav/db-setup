@@ -1,5 +1,30 @@
 # db-setup
 
+# Scripts
+Use these scripts to quickly launch databases.
+
+## ElasticSearch
+
+```bash
+   usage: python scripts/start_elasticsearch.py [-h] [-n N_NODES] [-p PORT]
+
+   options:
+   -h, --help            show this help message and exit
+   -n N_NODES, --n-nodes N_NODES
+               total number of nodes, default 3
+   -p PORT, --port PORT  
+               port number to use, default 55781
+```
+There are some parameters set inside the `scripts/start_elasticsearch.py` that may be modified as wished.
+PORT_DEFAULT = 55781
+NODES_DEFAULT = 3
+MASTER_IP = 'compute-3-12'
+DB_SETUP_PATH = '/home/sja082/db-assignment/db-setup/'
+
+
+# Manual
+Not recommended. Scripts mentioned above work just fine.
+
 ## ElasticSearch
 
 1. Download ElasticSearch:
