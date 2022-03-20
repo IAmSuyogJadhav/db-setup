@@ -88,7 +88,7 @@ if __name__ == '__main__':
         f"{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/bin/elasticsearch')} -Ehttp.port={port} -d -p pid"
         )
     )
-    kill_cmds.append(f"ssh -f {MASTER_IP} kill $(cat pid)")
+    kill_cmds.append(f"ssh -f {MASTER_IP} kill $(cat {os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/pid')})")
     print(f'[INFO] Launched the master node master-1 at {MASTER_IP}:{port}')
 
     # Launch the rest of the nodes (data nodes)
@@ -102,7 +102,7 @@ if __name__ == '__main__':
             f"-Enode.name=data-{i} -Epath.data='{os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/data_data' + str(i))}'"
             )
         )
-        kill_cmds.append(f"ssh -f {ip} kill $(cat pid{i})")
+        kill_cmds.append(f"ssh -f {ip} kill $(cat {os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/pid' + str(i))})")
         print(f'[INFO] Launched data node data-{i} at {ip}:{port}')
 
     # Keep this script running so that all the processes launched above can be stopped at once
