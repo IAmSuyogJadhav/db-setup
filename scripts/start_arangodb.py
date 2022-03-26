@@ -23,6 +23,11 @@ def arg_parser():
         help="total number of nodes, default %d" % NODES_DEFAULT
     )
 
+    parser.add_argument("--nodes-list", type=int, default=None,
+        help="A file containing a list of nodes to choose from, one per line. If not provided, a random list of hosts will be used."
+    )
+
+
     # parser.add_argument("-p", "--port", type=int, default=PORT_DEFAULT,
     #         help="port number to use, default %d" % PORT_DEFAULT
     # )
@@ -66,19 +71,31 @@ def generate_hosts(num_nodes, port):
     return hosts
 
 
+def read_hosts(nodes_list, port):
+    with open(nodes_list) as f:
+        hosts = f.read().strip(' ').split('\n')
+        hosts = [f"{h.strip(' ')}:{port}" for h in hosts if h != '']
+        return hosts
+
+
+
 if __name__ == '__main__':
     # Parse input arguments
     parser = arg_parser()
     args = parser.parse_args()
     num_nodes = args.n_nodes
-    port = PORT_DEFAULT
+    port = PORT_DEFAULT  # Currently, cannot change the port as the ArangDB starter script doesn't allow that
     assert num_nodes >= 1, "Must be more than 1"
 
     # Keep track of processes launched
     kill_cmds = []
 
     # Fetch a list of available compute nodes
-    hosts = generate_hosts(num_nodes, port)
+    if args.nodes_list is not None:
+        hosts = read_hosts(args.nodes_list, port)
+    else:
+        hosts = generate_hosts(num_nodes, port)
+    
     if f'{MASTER_IP}:{port}' in hosts:  # Make sure the master IP isn't one of them
         hosts.remove(f'{MASTER_IP}:{port}')
 
