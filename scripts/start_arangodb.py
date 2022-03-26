@@ -23,8 +23,8 @@ def arg_parser():
         help="total number of nodes, default %d" % NODES_DEFAULT
     )
 
-    parser.add_argument("--nodes-list", type=int, default=None,
-        help="A file containing a list of nodes to choose from, one per line. If not provided, a random list of hosts will be used."
+    parser.add_argument("--hosts-list", type=str, default=None,
+        help="A file containing a list of hosts to choose from, one per line. If not provided, a random list of hosts will be used."
     )
 
 
@@ -71,8 +71,8 @@ def generate_hosts(num_nodes, port):
     return hosts
 
 
-def read_hosts(nodes_list, port):
-    with open(nodes_list) as f:
+def read_hosts(hosts_list, port):
+    with open(hosts_list) as f:
         hosts = f.read().strip(' ').split('\n')
         hosts = [f"{h.strip(' ')}:{port}" for h in hosts if h != '']
         return hosts
@@ -91,8 +91,8 @@ if __name__ == '__main__':
     kill_cmds = []
 
     # Fetch a list of available compute nodes
-    if args.nodes_list is not None:
-        hosts = read_hosts(args.nodes_list, port)
+    if args.hosts_list is not None:
+        hosts = read_hosts(args.hosts_list, port)
     else:
         hosts = generate_hosts(num_nodes, port)
     
