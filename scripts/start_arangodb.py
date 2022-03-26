@@ -102,7 +102,7 @@ if __name__ == '__main__':
     # Launch the master node
     subprocess.Popen(shlex.split(
         f"ssh -f {MASTER_IP} {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/bin/arangodb')} "
-        f"--server.storage-engine=rocksdb --starter.data-dir=./data"
+        f"--server.storage-engine=rocksdb --starter.data-dir={os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data')}"
         )
     )
     kill_cmds.append(f"ssh -f {MASTER_IP} pkill arangodb")
@@ -115,7 +115,7 @@ if __name__ == '__main__':
         # Launch the node
         subprocess.Popen(shlex.split(
             f"ssh -f {ip} {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/bin/arangodb')} "
-            f"--server.storage-engine=rocksdb --starter.data-dir=./data{i} "
+            f"--server.storage-engine=rocksdb --starter.data-dir={os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data')}{i} "
             f"--starter.join {MASTER_IP}"
             )
         )
