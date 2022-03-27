@@ -123,9 +123,12 @@ if __name__ == '__main__':
         hosts.remove(f'{MASTER_IP}:{port}')
 
     # Launch the master node
+
+    agency_size = num_nodes if num_nodes %2 != 0 else num_nodes - 1  # Required by ArangoDB
+
     starter_cmd = f"ssh -f {MASTER_IP} {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/bin/arangodb')} "\
         f"--server.storage-engine=rocksdb --starter.data-dir={os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data')} "\
-        f"--starter.address={MASTER_IP} "
+        f"--cluster.agency-size={agency_size} --starter.address={MASTER_IP} "
     
     if num_nodes == 1:  # Special case
         starter_cmd += "--starter.mode=single"
