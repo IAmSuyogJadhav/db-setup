@@ -27,6 +27,10 @@ def arg_parser():
             help="port number to use, default %d" % PORT_DEFAULT
     )
 
+    parser.add_argument("--hosts-list", type=str, default=None,
+        help="A file containing a list of hosts to choose from, one per line. If not provided, a random list of hosts will be used."
+    )
+
     # parser.add_argument("-d", "--die-after-seconds", type=float,
     #         default=DIE_AFTER_SECONDS_DEFAULT,
     #         help="kill server after so many seconds have elapsed, " +
@@ -65,6 +69,11 @@ def generate_hosts(num_nodes, port):
         exit(1)
     return hosts
 
+def read_hosts(hosts_list, port):
+    with open(hosts_list) as f:
+        hosts = f.read().strip(' ').split('\n')
+        hosts = [f"{h.strip(' ')}:{port}" for h in hosts if h != '']
+        return hosts
 
 if __name__ == '__main__':
     # Parse input arguments
@@ -78,7 +87,12 @@ if __name__ == '__main__':
     kill_cmds = []
 
     # Fetch a list of available compute nodes
-    hosts = generate_hosts(num_nodes, port)
+    # Fetch a list of available compute nodes
+    if args.hosts_list is not None:
+        hosts = read_hosts(args.hosts_list, port)
+    else:
+        hosts = generate_hosts(num_nodes, port)
+
     if f'{MASTER_IP}:{port}' in hosts:  # Make sure the master IP isn't one of them
         hosts.remove(f'{MASTER_IP}:{port}')
 
