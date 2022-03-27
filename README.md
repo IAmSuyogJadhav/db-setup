@@ -24,6 +24,9 @@ Run the script:
                total number of nodes, default 3
    -p PORT, --port PORT  
                port number to use, default 55781
+  --hosts-list HOSTS_LIST
+  				A file containing a list of hosts to choose from, one per line. If not provided, a random list of hosts will be used.
+
 ```
 These are some parameters set inside the `scripts/start_elasticsearch.py` that may be modified as wished:
 
@@ -54,6 +57,9 @@ Run the script (the port can't be changed currently since the started arangodb b
    -h, --help            show this help message and exit
    -n N_NODES, --n-nodes N_NODES
                total number of nodes, default 3
+  --hosts-list HOSTS_LIST
+  				A file containing a list of hosts to choose from, one per line. If not provided, a random list of hosts will be used.
+
 ```
 
 
