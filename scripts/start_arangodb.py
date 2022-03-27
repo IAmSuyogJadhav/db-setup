@@ -125,14 +125,14 @@ if __name__ == '__main__':
     # Launch the master node
     starter_cmd = f"ssh -f {MASTER_IP} {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/bin/arangodb')} "\
         f"--server.storage-engine=rocksdb --starter.data-dir={os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data')} "\
-        f"--cluster.agency-size={num_nodes} --starter.address={MASTER_IP} "
+        f"--starter.address={MASTER_IP} "
     
     if num_nodes == 1:  # Special case
         starter_cmd += "--starter.mode=single"
 
     subprocess.Popen(shlex.split(starter_cmd))
 
-    kill_cmds.append(f"ssh -f {MASTER_IP} pkill arangodb")
+    kill_cmds.append(f"ssh -f {MASTER_IP} pkill -f arangodb")
     print(f'[INFO] Launched the master node at {MASTER_IP}:{port}')
 
     # Launch the rest of the nodes (data nodes)
@@ -146,7 +146,7 @@ if __name__ == '__main__':
             f"--starter.join {MASTER_IP}"
             )
         )
-        kill_cmds.append(f"ssh -f {ip} pkill arangodb")
+        kill_cmds.append(f"ssh -f {ip} pkill -f arangodb")
         print(f'[INFO] Launched data node {i} at {ip}:{port}')
 
     # Keep this script running so that all the processes launched above can be stopped at once
