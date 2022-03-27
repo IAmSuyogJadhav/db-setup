@@ -52,6 +52,18 @@ class GracefulKiller():
     def exit_gracefully(self, *args):
         for cmd in self.kill_cmds:
             subprocess.Popen(shlex.split(cmd))
+
+        # Clear the data directories and configs
+        try:
+            subprocess.Popen(shlex.split(f"rm  -r $HOME/arangodb3-linux-3.9.0/data*"))
+        except Exception as e:
+            print(f'{e} occured while deleting ~/arangodb3-linux-3.9.0/data*. Ignoring...')
+        
+        try:
+            subprocess.Popen(shlex.split(f"rm  -r {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data*')}"))
+        except Exception as e:
+            print(f'{e} occured while deleting ./arangodb3-linux-3.9.0/data*. Ignoring...')
+        
         self.exit_now = True
 
 
@@ -86,6 +98,17 @@ if __name__ == '__main__':
     num_nodes = args.n_nodes
     port = PORT_DEFAULT  # Currently, cannot change the port as the ArangDB starter script doesn't allow that
     assert num_nodes >= 1, "Must be more than 1"
+
+    # Clear the data directories and configs
+    try:
+        subprocess.Popen(shlex.split(f"rm  -r $HOME/arangodb3-linux-3.9.0/data*"))
+    except Exception as e:
+        pass
+    
+    try:
+        subprocess.Popen(shlex.split(f"rm  -r {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data*')}"))
+    except Exception as e:
+        pass
 
     # Keep track of processes launched
     kill_cmds = []
