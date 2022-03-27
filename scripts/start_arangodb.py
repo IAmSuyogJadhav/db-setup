@@ -53,7 +53,7 @@ class GracefulKiller():
         for cmd in self.kill_cmds:
             subprocess.Popen(shlex.split(cmd))
 
-        # Clear the data directories and configs
+        # Clear the preious data directories and configs
         try:
             subprocess.Popen(shlex.split(f"rm  -r $HOME/arangodb3-linux-3.9.0/data*"))
         except Exception as e:
@@ -123,11 +123,15 @@ if __name__ == '__main__':
         hosts.remove(f'{MASTER_IP}:{port}')
 
     # Launch the master node
-    subprocess.Popen(shlex.split(
-        f"ssh -f {MASTER_IP} {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/bin/arangodb')} "
-        f"--server.storage-engine=rocksdb --starter.data-dir={os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data')}"
-        )
-    )
+    starter_cmd = f"ssh -f {MASTER_IP} {os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/bin/arangodb')} "\
+        f"--server.storage-engine=rocksdb --starter.data-dir={os.path.join(DB_SETUP_PATH, 'arangodb3-linux-3.9.0/data')} "\
+        f"--cluster.agency-size={num_nodes} --starter.address={MASTER_IP} "
+    
+    if num_nodes == 1:  # Special case
+        starter_cmd += "--starter.mode=single"
+
+    subprocess.Popen(shlex.split(starter_cmd))
+
     kill_cmds.append(f"ssh -f {MASTER_IP} pkill arangodb")
     print(f'[INFO] Launched the master node at {MASTER_IP}:{port}')
 
