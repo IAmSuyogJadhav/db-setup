@@ -104,6 +104,7 @@ if __name__ == '__main__':
         run_cmd += f"-Ediscovery.seed_hosts={','.join([host.split(':')[0] for host in hosts[:num_nodes-1]])}"
     
     subprocess.Popen(shlex.split(
+        run_cmd
         )
     )
     # kill_cmds.append(f"ssh -f {MASTER_IP} kill $(cat {os.path.join(DB_SETUP_PATH, 'elasticsearch-8.1.0/pid')})")
