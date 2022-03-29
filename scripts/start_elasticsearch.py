@@ -8,9 +8,9 @@ import re
 import time
 
 # Some parameters
-PORT_DEFAULT = 55781
+PORT_DEFAULT = 8529
 NODES_DEFAULT = 3
-MASTER_IP = 'compute-3-12'
+MASTER_IP = 'compute-10-16'
 DB_SETUP_PATH = '/home/sja082/db-assignment/db-setup/'
 # DIE_AFTER_SECONDS_DEFAULT = 20 * 60
 
