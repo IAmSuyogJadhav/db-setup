@@ -41,6 +41,6 @@ network.bind_host: 0.0.0.0
 network.publish_host: 0.0.0.0
 http.host: 0.0.0.0
 transport.host: 0.0.0.0
-http.port: 55781
-discovery.seed_hosts: ["compute-3-12"]
+http.port: 8529
+discovery.seed_hosts: ["compute-10-16"]
 cluster.initial_master_nodes: ["master-1"]
