@@ -31,9 +31,9 @@ Run the script:
 These are some parameters set inside the `scripts/start_elasticsearch.py` that may be modified as wished:
 
 ```python
-PORT_DEFAULT = 55781
+PORT_DEFAULT = 8529
 NODES_DEFAULT = 3
-MASTER_IP = 'compute-3-12'
+MASTER_IP = 'compute-10-16'
 DB_SETUP_PATH = '/home/sja082/db-assignment/db-setup/'
 ```
 
@@ -62,73 +62,10 @@ Run the script (the port can't be changed currently since the started arangodb b
 
 ```
 
+## 3. Redis
 
-# Manual
+The variables can be set inside the script `scripts/redis-deploy.sh`. Install Redis and run the script to launch the cluster.
 
-Not recommended. Scripts mentioned above work just fine.
-
-## 1. ElasticSearch
-
-1. Download ElasticSearch:
-
-   ```bash
-   > wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.1.0-linux-x86_64.tar.gz
-   > tar -xzf elasticsearch-8.1.0-linux-x86_64.tar.gz
-   > cd elasticsearch-8.1.0/
-   ```
-
-2. Update the `path.data` argument inside `config_master1/elasticsearch.yml` appropriately (for e.g., change sja082 with your username and update the path to correctly point to the `elasticsearch-8.1.0` folder etc.)
-
-3. Launch master:
-
-   May need to change `ES_PATH_CONF` depending on your directory structure.
-
-   ```bash
-   > ssh -f compute-3-12 ES_PATH_CONF=/home/sja082/db-assignment/db-setup/elastic_config_master1 $(pwd)/bin/elasticsearch -d -p pid
-   ```
-
-4. Launch data nodes:
-
-   > **Note**: Currently hardcoded to assume the master to be running on compute-3-12
-
-   Use the following command, substituting {num} with different integers for different data \<node>s.
-
-   May need to change `ES_PATH_CONF` and path.data depending on your directory structure.
-
-   ```bash
-   > ssh -f compute-<node> ES_PATH_CONF=/home/sja082/db-assignment/db-setup/elastic_config_data1 $(pwd)/bin/elasticsearch -d -p pid{num} -Enode.name=data-{num} -Epath.data="/home/sja082/db-assignment/db-setup/elasticsearch-8.1.0/data_data{num}"
-   ```
-
-5. Kill nodes once done:
-
-   master:
-
-   ```bash
-   > ssh -f compute-3-12 kill $(cat pid)
-   ```
-
-   data nodes: 
-
-   Substitute {num} with different integers for different data \<node>s (same as used earlier). 
-
-   ```bash
-   > ssh -f compute-<node> kill $(cat pid{num})
-   ```
-
-## 2. ArangoDB
-
-1. Download ArangoDB
-
-   ```bash
-   > wget https://download.arangodb.com/arangodb39/Community/Linux/arangodb3-linux-3.9.0.tar.gz
-   > cd arangodb3-linux-3.9.0
-   ```
-
-2. Create ArangoDB secret
-
-   ```bash
-   > bin/arangodb create jwt-secret --secret=arangodb.secret
-   > chmod 400 arangodb.secret
-   ```
-
-3. s
+```bash
+> bash scripts/redis-deploy.sh 
+```
